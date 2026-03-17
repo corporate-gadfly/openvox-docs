@@ -33,7 +33,7 @@ end
 
 group(:development) do
   gem 'rubocop-rake', require: false
-  gem 'voxpupuli-rubocop', '~> 5.1.0'
+  gem 'voxpupuli-rubocop', '~> 5.2.0'
 end
 
 # group(:debug) do
