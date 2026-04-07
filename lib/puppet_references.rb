@@ -78,4 +78,12 @@ module PuppetReferences
     puts "NOTE: You'll have to move the generated files into place yourself. The 'latest' location for each is:"
     puts locations
   end
+
+  def self.update_docs(component)
+    raise Exception "Missing latest directory in source/#{component}" unless File.exist?("source/#{component}/latest")
+    raise Exception "No reference output found in references_output/#{component}" unless File.exist?("references_output/#{component}")
+
+    require 'fileutils'
+    FileUtils.cp_r("references_output/#{component}/.", "source/#{component}/latest")
+  end
 end

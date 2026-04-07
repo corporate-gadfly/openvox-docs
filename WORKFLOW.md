@@ -55,9 +55,10 @@ This clones puppet and facter into the `vendor` directory and generates the `ref
 
 ## Moving stuff in place
 
-Copy the output from `references_output/facter` to `source/facter/latest`
+For Puppet run `bundle exec rake references:update_puppet_docs`
+For Facter run `bundle exec rake references:update_facter_docs`
 
-Copy the output from `references_output/puppet` to `source/puppet/latest`
+or do both in one: `bundle exec rake references:update_docs`
 
 Run `bundle exec rake generate` to generate the new content.
 

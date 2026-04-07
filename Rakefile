@@ -384,6 +384,9 @@ task :references do
   puts 'bundle exec rake references:puppet VERSION=<GIT TAG OR COMMIT>'
   puts 'bundle exec rake references:facter VERSION=<GIT TAG OR COMMIT>'
   puts 'bundle exec rake references:version_tables'
+  puts 'bundle exec rake references:update_puppet_docs'
+  puts 'bundle exec rake references:update_facter_docs'
+  puts 'bundle exec rake references:update_docs'
 end
 
 namespace :references do
@@ -404,5 +407,20 @@ namespace :references do
 
   task :check_version do
     abort 'No VERSION given to build references for' unless ENV['VERSION']
+  end
+
+  task :update_puppet_docs do
+    require 'puppet_references'
+    PuppetReferences.update_docs('puppet')
+  end
+
+  task :update_facter_docs do
+    require 'puppet_references'
+    PuppetReferences.update_docs('facter')
+  end
+
+  task :update_docs do
+    Rake::Task['references:update_facter_docs'].invoke
+    Rake::Task['references:update_puppet_docs'].invoke
   end
 end
