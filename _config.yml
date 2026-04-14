@@ -31,6 +31,18 @@ collections:
     output: true
     permalink: '/openfact/5.x/:path.html'
 
+defaults:
+  - scope:
+      path: ''
+      type: openfact_latest
+    values:
+      nav: openfact_5x
+  - scope:
+      path: ''
+      type: openfact_5x
+    values:
+      nav: openfact_5x
+
 
 # Ignores all legacy files present in the root directory as of
 # commit 09952f27 (with the exception of LICENSE). As older files
