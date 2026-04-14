@@ -59,6 +59,17 @@ defaults:
     values:
       nav: openfact_5x
 
+  - scope:
+      path: ''
+      type: openvox_latest
+    values:
+      nav: openvox_8x
+  - scope:
+      path: ''
+      type: openvox_8x
+    values:
+      nav: openvox_8x
+
 
 # Ignores all legacy files present in the root directory as of
 # commit 09952f27 (with the exception of LICENSE). As older files
