@@ -1,0 +1,3 @@
+- title: OpenFact
+  url: /openfact/latest/
+  collections: [openfact_latest, openfact_5x]

@@ -21,6 +21,17 @@ jekyll_vitepress:
   copy_page:
     enabled: false
 
+
+collections_dir: docs
+collections:
+  openfact_latest:
+    output: true
+    permalink: '/openfact/latest/:path.html'
+  openfact_5x:
+    output: true
+    permalink: '/openfact/5.x/:path.html'
+
+
 # Ignores all legacy files present in the root directory as of
 # commit 09952f27 (with the exception of LICENSE). As older files
 # are cleaned up, this exclusion list should shrink.
