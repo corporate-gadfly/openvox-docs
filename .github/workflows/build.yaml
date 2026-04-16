@@ -66,6 +66,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
+          ref: '${{ inputs.ref }}'
           fetch-depth: 1
       - uses: ruby/setup-ruby@v1
         with:

@@ -19,12 +19,18 @@ jobs:
 
   build:
     needs: test
+    permissions:
+      contents: read
+      packages: write
     uses: ./.github/workflows/build.yaml
     with:
       ref: '${{ github.sha }}'
 
   deploy:
     needs: build
+    permissions:
+      id-token: write
+      pages: write
     uses: ./.github/workflows/deploy.yaml
     with:
       tag: '${{ needs.build.outputs.tag }}'
