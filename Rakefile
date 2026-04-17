@@ -6,7 +6,6 @@ require 'rake'
 require 'pathname'
 require 'fileutils'
 require 'yaml'
-require 'puppet_docs/config'
 require 'rake/clean'
 
 require 'rubocop/rake_task'
@@ -28,8 +27,6 @@ PREVIEW_DIR = "#{top_dir}/_preview".freeze
 
 VERSION_FILE = "#{OUTPUT_DIR}/VERSION.txt".freeze
 
-@config_data = PuppetDocs::Config.new("#{SOURCE_DIR}/_config.yml")
-
 def jekyll(command = 'build', source = SOURCE_DIR, destination = OUTPUT_DIR, *args)
   about_verbose_mode = <<-ABOUT_VERBOSE_MODE
 
@@ -49,12 +46,7 @@ def jekyll(command = 'build', source = SOURCE_DIR, destination = OUTPUT_DIR, *ar
 
   verbose_mode = '--verbose --trace | tee puppet-docs-build.log' if ENV['DEBUG_PUPPET_DOCS_RAKEFILE']
 
-  amended_config = "#{SOURCE_DIR}/_config_amended.yml"
-  File.write(amended_config, YAML.dump(@config_data))
-  status = system("set -x; bundle exec jekyll #{command} --source #{source} --destination #{destination} #{args.join(' ')} --config #{amended_config} #{verbose_mode}")
-  FileUtils.rm(amended_config)
-
-  status
+  system("set -x; bundle exec jekyll #{command} --source #{source} --destination #{destination} #{args.join(' ')} #{verbose_mode}")
 end
 
 desc 'Stash all directories but one in a temporary location. Run a preview server on localhost:4000.'
@@ -194,13 +186,6 @@ task :clean do
   puts 'Deleting symlinks to external sources...'
   Rake::Task['externalsources:clean'].invoke
   Rake::Task['externalsources:clean'].reenable
-  # Get rid of the amended config file we write for Jekyll
-  begin
-    puts 'Deleting _config_amended.yml...'
-    FileUtils.rm("#{SOURCE_DIR}/_config_amended.yml")
-  rescue StandardError
-    puts 'There was no _config_amended.yml file to delete.'
-  end
 end
 
 desc 'Generate the documentation'
