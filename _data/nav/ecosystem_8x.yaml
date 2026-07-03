@@ -7,6 +7,8 @@
     link: history.html
   - text: OpenVox Community
     link: community.html
+  - text: Training resources
+    link: training.html
 - text: Getting Started
   items:
   - text: Whirlwind guide
