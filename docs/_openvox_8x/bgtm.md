@@ -42,7 +42,7 @@ This section covers:
 * [How best to order your classes (rather than resources)](#ordering).
 * [How to leverage and utilize dependencies](#dependencies).
 
-To demonstrate a real-world best practices standard module, we will walk through the structure of the [puppetlabs-ntp](https://forge.puppet.com/puppetlabs/ntp) module.
+To demonstrate a real-world best practices standard module, we will walk through the structure of VoxPupuli's [puppet-chrony](https://github.com/voxpupuli/puppet-chrony) module.
 
 ### Class design
 
@@ -59,81 +59,68 @@ In terms of class structure we recommend the following (more detail below):
 The main class of any module must share the name of the module and be located in the `init.pp` file. The name and location of the main module class is extremely important, as it guides the [autoloader](./lang_namespaces.html#autoloader-behavior) behavior.
 The main class of a module is its interface point and ought to be the only parameterized class if possible. Limiting the parameterized classes to just the main class allows you to control usage of the entire module with the inclusion of a single class. This class should provide sensible defaults so that a user can get going with `include module`.
 
-For instance, the main `ntp` class in the `ntp` module looks like this:
+For instance, the main `chrony` class in the `chrony` module looks like this:
 
 ```puppet
-class ntp (
-  Boolean $broadcastclient,
-  Stdlib::Absolutepath $config,
-  Optional[Stdlib::Absolutepath] $config_dir,
-  String $config_file_mode,
-  Optional[String] $config_epp,
-  Optional[String] $config_template,
-  Boolean $disable_auth,
-  Boolean $disable_dhclient,
-  Boolean $disable_kernel,
-  Boolean $disable_monitor,
-  Optional[Array[String]] $fudge,
-  Stdlib::Absolutepath $driftfile,
+class chrony (
+  Array[Stdlib::IP::Address] $bindaddress = [],
+  Array[String] $bindcmdaddress = ['127.0.0.1', '::1'],
+  Optional[String] $initstepslew = undef,
+  Array[String] $cmdacl = [],
+  NotUndef $commandkey = 0,
+  Stdlib::Unixpath $config = '/etc/chrony/chrony.conf',
+  Stdlib::Filemode $config_mode = '0644',
+  Boolean $config_keys_manage = true,
+  Array[String[1]] $keys = [],
+  Stdlib::Unixpath $driftfile = '/var/lib/chrony/drift',
  ...
 ```
+
+Note that each static default is declared inline, right on the parameter, so the value is visible in the class signature and in generated reference documentation.
 
 #### `module::install`
 
 The install class must be located in the `install.pp` file. It should contain all of the resources related to getting the software that the module manages onto the node.
 
-The install class must be named `module::install`, as in the `ntp` module:
+The install class must be named `module::install`, as in the `chrony` module:
 
 ```puppet
-class ntp::install {
+class chrony::install {
+  assert_private()
 
-  if $ntp::package_manage {
-    package { $ntp::package_name:
-      ensure => $ntp::package_ensure,
-    }
-
+  package { 'chrony':
+    ensure   => $chrony::package_ensure,
+    name     => $chrony::package_name,
+    source   => $chrony::package_source,
+    provider => $chrony::package_provider,
   }
-
 }
 ```
+
+The `install`, `config`, and `service` classes are private: they are declared only by the main `chrony` class, never directly by users. Each one calls `assert_private()`, which fails compilation with a clear message if the class is declared from outside its own module. See [public and private classes](./style_guide.html#public-and-private) for more on this distinction.
 
 #### `module::config`
 
 The resources related to configuring the installed software should be placed in a config class. The config class must be named `module::config` and must be located in the `config.pp` file.
 
-For example, see the `module::config` class in the `ntp` module:
+For example, see the `module::config` class in the `chrony` module:
 
 ```puppet
-class ntp::config {
+class chrony::config {
+  assert_private()
 
-  #The servers-netconfig file overrides NTP config on SLES 12, interfering with our configuration.
-  if $facts['operatingsystem'] == 'SLES' and $facts['operatingsystemmajrelease'] == '12' {
-    file { '/var/run/ntp/servers-netconfig':
-      ensure => 'absent'
-    }
-  }
-
-  if $ntp::keys_enable {
-    case $ntp::config_dir {
-      '/', '/etc', undef: {}
-      default: {
-        file { $ntp::config_dir:
-          ensure  => directory,
-          owner   => 0,
-          group   => 0,
-          mode    => '0775',
-          recurse => false,
-        }
+  file { $chrony::config:
+    ensure  => file,
+    owner   => 0,
+    group   => 0,
+    mode    => $chrony::config_mode,
+    content => epp($chrony::config_template,
+      {
+        servers => chrony::server_array_to_hash($chrony::servers, ['iburst']),
+        pools   => chrony::server_array_to_hash($chrony::pools, ['iburst']),
+        peers   => chrony::server_array_to_hash($chrony::peers),
       }
-    }
-
-    file { $ntp::keys_file:
-      ensure  => file,
-      owner   => 0,
-      group   => 0,
-      mode    => '0644',
-      content => epp('ntp/keys.epp'),
-    }
+    ),
   }
 ...
 ```
@@ -145,23 +132,22 @@ The remaining service resources, and anything else related to the running state 
 For example:
 
 ```puppet
-class ntp::service {
+class chrony::service {
+  assert_private()
 
-  if ! ($ntp::service_ensure in [ 'running', 'stopped' ]) {
-    fail('service_ensure parameter must be running or stopped')
-  }
-
-  if $ntp::service_manage == true {
-    service { 'ntp':
-      ensure     => $ntp::service_ensure,
-      enable     => $ntp::service_enable,
-      name       => $ntp::service_name,
-      provider   => $ntp::service_provider,
-      hasstatus  => true,
-      hasrestart => true,
+  if $chrony::service_manage {
+    service { $chrony::service_name:
+      ensure => $chrony::service_ensure,
+      enable => $chrony::service_enable,
     }
   }
 
+  if $chrony::wait_manage {
+    service { $chrony::wait_name:
+      ensure => $chrony::wait_ensure,
+      enable => $chrony::wait_enable,
+    }
+  }
 }
 ```
 
@@ -177,22 +163,22 @@ Naming consistency is imperative for community comprehension and assists in trou
 
 Best practices recommend the pattern of `thing_property` for naming parameters.
 
-For example, in the `ntp` module
+For example, in the `chrony` module the service resource uses `service_name`, `service_ensure`, and `service_enable`:
 
 ```puppet
-class ntp::install {
+class chrony::service {
 
-  if $ntp::package_manage {
-    package { $ntp::package_name:
-      ensure => $ntp::package_ensure,
+  if $chrony::service_manage {
+    service { $chrony::service_name:
+      ensure => $chrony::service_ensure,
+      enable => $chrony::service_enable,
     }
-
   }
 
 }
 ```
 
-If you have a parameter that toggles an entire function on and off, the naming convention can be amended to `thing_manage`. This applies, in particular, to Boolean toggles, such as when the module manages the installation altogether. The `thing_manage` convention allows you to wrap all of the resources in an `if $package_manage {}` test, as shown in the `ntp` example above.
+If you have a parameter that toggles an entire function on and off, the naming convention can be amended to `thing_manage`. This applies, in particular, to Boolean toggles, such as when the module manages the service altogether. The `thing_manage` convention allows you to wrap all of the resources in an `if $service_manage {}` test, as shown in the `chrony` example above.
 
 Consistent naming across modules helps with the readability and usability of your code.
 
@@ -228,15 +214,16 @@ To allow other modules to form ordering relationships with your module, ensure t
 
 Classes do not _automatically_ contain the classes they declare. This is because classes can be declared in several places via `include` and similar functions. To contain classes, use [the `contain` function](./function.html#contain). For more information and context about containment, see [the containment docs](./lang_containment.html).
 
-For example, the `ntp` module uses containment in the main `ntp` class:
+For example, the `chrony` module uses containment in the main `chrony` class:
 
 ```puppet
-contain ntp::install
-contain ntp::config
-contain ntp::service
-Class['::ntp::install'] ->
-Class['::ntp::config'] ~>
-Class['::ntp::service']
+contain chrony::install
+contain chrony::config
+contain chrony::service
+
+Class['chrony::install']
+-> Class['chrony::config']
+~> Class['chrony::service']
 ```
 
 ### Dependencies

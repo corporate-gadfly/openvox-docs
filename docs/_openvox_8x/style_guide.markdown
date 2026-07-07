@@ -191,15 +191,15 @@ Do not use `/* */` comments in Puppet code.
 **Good:**
 
 ```puppet
-# Configures NTP
-file { '/etc/ntp.conf': ... }
+# Configures chrony
+file { '/etc/chrony.conf': ... }
 ```
 
 **Bad:**
 
 ```puppet
-/* Creates file /etc/ntp.conf */
-file { '/etc/ntp.conf': ... }
+/* Creates file /etc/chrony.conf */
+file { '/etc/chrony.conf': ... }
 ```
 
 #### Documentation comments
@@ -712,7 +712,7 @@ Documentation [comments](#documentation-comments) for OpenVox Strings should be 
 1. Following lines, if applicable: Define parameters. Parameters should be [typed](./lang_data_type.html).
 1. Next lines: Includes and validation come after parameters are defined. Includes may come before or after validation, but should be grouped separately, with all includes and requires in one group and all validations in another.
    * Validations should validate any parameters and fail catalog compilation if any
-    parameters are invalid. See [ntp](https://github.com/puppetlabs/puppetlabs-ntp/blob/master/manifests/init.pp#L212:L274) for an example.
+    parameters are invalid. See [chrony](https://github.com/voxpupuli/puppet-chrony/blob/master/manifests/init.pp#L371-L373) for an example.
 1. Next lines, if applicable: Should declare local variables and perform variable munging.
 1. Next lines: Should declare resource defaults.
 1. Next lines:  Should override resources if necessary.
@@ -1262,20 +1262,20 @@ For example:
 ```puppet
 # @param config_epp Specifies a file to act as a EPP template for the config file.
 #  Valid options: a path (absolute, or relative to the module path). Example value:
-#  'ntp/ntp.conf.epp'. A validation error is thrown if you supply both this param **and**
+#  'chrony/chrony.conf.epp'. A validation error is thrown if you supply both this param **and**
 #  the `config_template` param.
 ```
 
 If you use Strings to document your module, include information about Strings in the Reference section of your README so that your users will know how to generate the documentation. See [OpenVox Strings](https://github.com/OpenVoxProject/openvox-strings) documentation for details on usage, installation, and correctly writing documentation comments.
 
-If you do not include Strings code comments, you should include a Reference section in your README with a complete list of all classes, types, providers, defined types, and parameters that the user can configure. Include a brief description, the valid options, and the default values (if any). For example, this is a parameter for the `ntp` module's `ntp` class:
+If you do not include Strings code comments, you should include a Reference section in your README with a complete list of all classes, types, providers, defined types, and parameters that the user can configure. Include a brief description, the valid options, and the default values (if any). For example, this is a parameter for the `chrony` module's `chrony` class:
 
 ```markdown
 #### `package_ensure`
 
 Data type: String.
 
-Whether to install the NTP package, and what version to install. Values: 'present', 'latest', or a specific version number.
+Whether to install the chrony package, and what version to install. Values: 'present', 'latest', or a specific version number.
 
 Default value: 'present'.
 ```
