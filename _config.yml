@@ -32,6 +32,9 @@ jekyll_vitepress:
   # `_data/nav/*.yaml` and thus cause confusion.
   doc_footer:
     enabled: false
+  github_sponsor:
+    enabled: true
+    user: voxpupuli
 
 
 collections_dir: docs
