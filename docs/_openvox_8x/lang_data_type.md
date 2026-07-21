@@ -19,6 +19,7 @@ title: "Language: Data types: Data type syntax"
 [uri]: ./lang_data_uri.html
 [binary]: ./lang_data_binary.html
 [time]: ./lang_data_time.html
+[semver]: ./lang_data_semver.html
 [undef]: ./lang_data_undef.html
 [default]: ./lang_data_default.html
 [resource_reference]: ./lang_data_resource_reference.html
@@ -154,6 +155,7 @@ These are the "real" data types, which make up the most common values you'll int
 * [`URI`][uri]
 * [`Binary`][binary]
 * [`Timestamp` and `Timespan`][time]
+* [`SemVer` and `SemVerRange`][semver]
 * [`Undef`][undef]
 * [`Default`][default]
 

@@ -197,6 +197,8 @@
     link: "lang_data_binary.html"
   - text: Timestamp and Timespan
     link: "lang_data_time.html"
+  - text: SemVer and SemVerRange
+    link: "lang_data_semver.html"
   - text: Sensitive
     link: "lang_data_sensitive.html"
   - text: Undef
