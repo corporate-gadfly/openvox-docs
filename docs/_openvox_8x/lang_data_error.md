@@ -89,11 +89,15 @@ This makes `Error` useful for sorting errors by category, for example in a [case
 that handles each `kind` differently:
 
 ```puppet
+$err = Error('Config file missing', 'mymod/config')
+
 $handled = $err ? {
   Error['mymod/config']  => 'config problem',
   Error['mymod/network'] => 'network problem',
   default                => 'unknown problem',
 }
+
+notice($handled) # config problem
 ```
 
 ### Examples
