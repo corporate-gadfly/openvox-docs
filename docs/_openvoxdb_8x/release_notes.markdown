@@ -6,6 +6,38 @@ canonical: "/openvoxdb/latest/release_notes.html"
 
 # OpenVoxDB 8 Release Notes
 
+## OpenVoxDB 8.15.0
+
+Released July 22, 2026.
+
+This is a bug-fix, and security release of OpenVoxDB.
+
+All bug fixes, new features and other changes are provided on the [project's GitHub release page](https://github.com/OpenVoxProject/openvoxdb/releases/tag/8.15.0).
+
+### Security Issues Resolved in 8.15.0
+
+| Identifier                                                               | CVSS 3.1 Score | Resolved By                                             |
+| :---------------------------------------------------------------- | :------------: | :------------------------------------------------------------- |
+| [CVE-2026-29062](https://nvd.nist.gov/vuln/detail/CVE-2026-29062) |       7.5      | `pkg:maven/com.fasterxml.jackson.core/jackson-core@2.21.5`     |
+| [CVE-2026-54513](https://nvd.nist.gov/vuln/detail/CVE-2026-54513) |       8.1      | `pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5` |
+| [CVE-2026-54512](https://nvd.nist.gov/vuln/detail/CVE-2026-54512) |       8.1      | `pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5` |
+| [CVE-2026-59889](https://nvd.nist.gov/vuln/detail/CVE-2026-59889) |       6.5      | `pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5` |
+| [CVE-2026-59888](https://nvd.nist.gov/vuln/detail/CVE-2026-59888) |       6.5      | `pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5` |
+| [CVE-2026-54518](https://nvd.nist.gov/vuln/detail/CVE-2026-54518) |       6.5      | `pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5` |
+| [CVE-2026-54516](https://nvd.nist.gov/vuln/detail/CVE-2026-54516) |       5.3      | `pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5` |
+| [CVE-2026-54517](https://nvd.nist.gov/vuln/detail/CVE-2026-54517) |       5.3      | `pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5` |
+| [CVE-2026-54514](https://nvd.nist.gov/vuln/detail/CVE-2026-54514) |       5.3      | `pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5` |
+| [CVE-2026-54513](https://nvd.nist.gov/vuln/detail/CVE-2026-54513) |       8.1      | `pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5` |
+| [CVE-2026-54512](https://nvd.nist.gov/vuln/detail/CVE-2026-54512) |       8.1      | `pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5` |
+| [CVE-2026-59889](https://nvd.nist.gov/vuln/detail/CVE-2026-59889) |       6.5      | `pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5` |
+| [CVE-2026-59888](https://nvd.nist.gov/vuln/detail/CVE-2026-59888) |       6.5      | `pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5` |
+| [CVE-2026-54518](https://nvd.nist.gov/vuln/detail/CVE-2026-54518) |       6.5      | `pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5` |
+| [CVE-2026-54515](https://nvd.nist.gov/vuln/detail/CVE-2026-54515) |       5.3      | `pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5` |
+| [CVE-2026-54516](https://nvd.nist.gov/vuln/detail/CVE-2026-54516) |       5.3      | `pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5` |
+| [CVE-2026-54517](https://nvd.nist.gov/vuln/detail/CVE-2026-54517) |       5.3      | `pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5` |
+| [CVE-2026-54514](https://nvd.nist.gov/vuln/detail/CVE-2026-54514) |       5.3      | `pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5` |
+| [CVE-2026-54291](https://nvd.nist.gov/vuln/detail/CVE-2026-54291) |       5.9      | `pkg:maven/org.postgresql/postgresql@42.7.13`                  |
+
 ## OpenVoxDB 8.14.1
 
 Released June 25, 2026.
