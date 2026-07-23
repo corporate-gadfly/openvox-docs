@@ -118,6 +118,7 @@ $e = Error('boom')
 notice($e =~ RichData)   # true
 notice($e =~ Data)       # false
 notice($e =~ Scalar)     # false
+notice($e =~ ScalarData) # false
 ```
 
 That matters when a parameter or function expects `Data`, which covers only the JSON-compatible types. Use
