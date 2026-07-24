@@ -34,6 +34,62 @@ All bug fixes, new features and other changes are provided on the [project's Git
 | [CVE-2026-54517](https://nvd.nist.gov/vuln/detail/CVE-2026-54517) |       5.3      | `pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5` |
 | [CVE-2026-54514](https://nvd.nist.gov/vuln/detail/CVE-2026-54514) |       5.3      | `pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5` |
 
+### Known Issues in 8.15.0
+
+#### `resolv` times out when `/etc/resolv.conf` contains multiple IPv6 nameservers
+
+The JRuby 9.4.15.0 upgrade included in this release updated the Ruby `resolv`
+library to a newer version. This newer `resolv` version introduced a mis-match
+where queries to IPv6 DNS servers are sent using compressed addresses (e.g.
+`2001:db8::1`), while responses arrive from un-compressed addresses (e.g.
+`2001:db8:0:0:0:0:0:1`). This mis-match means that queries to IPv6 servers
+are never seen as "answered" and the library returns an empty `[]` response
+after waiting for 160 seconds.
+
+This issue only occurs when `/etc/resolv.conf` is configured exclusively with
+two or more IPv6 nameservers. For example:
+
+```console
+# cat /etc/resolv.conf
+# Google Public DNS (IPv6)
+nameserver 2001:4860:4860::8888
+nameserver 2001:4860:4860::8844
+```
+
+This issue will affect modules that use the `Resolv` library to look up
+DNS records, notably: `puppet-dnsquery`.
+
+The following command can be used to test if an OpenVox Server is affected
+by the issue:
+
+```bash
+/opt/puppetlabs/bin/puppetserver ruby -rtimeout -rresolv -e 'Timeout.timeout(10) { puts Resolv::DNS.new.getaddresses("voxpupuli.org") }'
+```
+
+The command will take several seconds to run, as a JVM is launched, but should
+print a list of DNS addresses to STDOUT:
+
+```console
+104.21.84.238
+172.67.198.227
+2606:4700:3035::ac43:c6e3
+2606:4700:3035::6815:54ee
+```
+
+The command will print a `Timeout::Error` if the issue is present:
+
+```bash
+Timeout::Error: execution expired
+  timeout at uri:classloader:/META-INF/jruby.home/lib/ruby/stdlib/timeout.rb:199
+   <main> at -e:1
+```
+
+See [OpenVoxProject/openvox-server#535][openvox-server-535] for more details
+and subscribe for updates on a fix. Recommended workaround is to downgrade the
+`openvox-server` package to version 8.14.1.
+
+[openvox-server-535]: https://github.com/OpenVoxProject/openvox-server/issues/535
+
 ## OpenVox Server 8.14.1
 
 Released June 24, 2026.
@@ -74,7 +130,7 @@ All bug fixes, new features and other changes are provided on the [project's Git
 | :----------------------------------------------------------------------- | :------------: | :--------------------------------------------------------- |
 | [GHSA-72hv-8253-57qq](https://github.com/advisories/GHSA-72hv-8253-57qq) |       N/A      | `pkg:maven/com.fasterxml.jackson.core/jackson-core@2.21.3` |
 
-### Known Issues
+### Known Issues in 8.13.0
 
 #### `jruby-openssl` 0.15.4 Fails to Parse EC Keys
 
